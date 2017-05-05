@@ -1,4 +1,4 @@
-package com.kingja.vinci.Downloader;
+package com.kingja.vinci;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.kingja.vinci.Cache.LruCache;
+import com.kingja.vinci.Downloader.Downloader;
+import com.kingja.vinci.Downloader.OkHttpDownloader;
 import com.kingja.vinci.Request;
 
 import java.io.IOException;
@@ -26,7 +28,7 @@ public class DownloadTask implements Runnable {
     private Request request;
     private LruCache cache;
 
-    public DownloadTask(Handler handler, Request request, LruCache cache) {
+    public DownloadTask(Handler handler, Request request, Downloader downloader, LruCache cache) {
         this.handler = handler;
         this.request = request;
         this.cache = cache;
@@ -34,21 +36,24 @@ public class DownloadTask implements Runnable {
 
     @Override
     public void run() {
-        Log.e(TAG, "Thread: "+Thread.currentThread().getName() );
         OkHttpDownloader okHttpDownloader = new OkHttpDownloader();
+        Bitmap bitmap=null;
         try {
             Response response = okHttpDownloader.load(request.url);
-            InputStream inputStream = response.body().byteStream();
-            final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            request.imageView.post(new Runnable() {
-                @Override
-                public void run() {
-                    cache.set(request.url,bitmap);
-                    request.imageView.setImageBitmap(bitmap);
-                }
-            });
+            InputStream in = response.body().byteStream();
+             bitmap = BitmapFactory.decodeStream(in);
         } catch (IOException e) {
+            Log.e(TAG, "任务出错: "+e.getMessage());
             e.printStackTrace();
+            return;
         }
+        final Bitmap finalBitmap = bitmap;
+        request.imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                cache.set(request.url, finalBitmap);
+                request.imageView.setImageBitmap(finalBitmap);
+            }
+        });
     }
 }

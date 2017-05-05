@@ -2,10 +2,13 @@ package com.kingja.vinci;
 
 
 import android.support.annotation.WorkerThread;
+import android.util.Log;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Description:管理请求队里，暂停，取消请求
@@ -35,5 +38,6 @@ public class WorkThreadManager {
 
     public void addRequest(Request request) {
         mRequestQueue.add(request);
+        Log.e(TAG, "加入队列: "+mRequestQueue.size() );
     }
 }

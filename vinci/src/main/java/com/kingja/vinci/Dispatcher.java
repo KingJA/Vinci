@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.kingja.vinci.Cache.LruCache;
-import com.kingja.vinci.Downloader.DownloadTask;
 import com.kingja.vinci.Downloader.Downloader;
 
 import java.util.concurrent.ExecutorService;
@@ -33,6 +32,6 @@ public class Dispatcher {
     }
 
     public void dealTask(Request request) {
-        threadPool.execute(new DownloadTask(mainHandler, request,cache));
+        threadPool.execute(new DownloadTask(mainHandler, request,downloader,cache));
     }
 }

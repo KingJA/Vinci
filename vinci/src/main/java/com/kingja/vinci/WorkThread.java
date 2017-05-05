@@ -2,11 +2,14 @@ package com.kingja.vinci;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.InputStream;
 import java.util.concurrent.BlockingQueue;
 
 import okhttp3.Response;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Description:TODO
@@ -28,8 +31,11 @@ public class WorkThread extends Thread {
     public void run() {
         while (!isInterrupted()) {
             try {
-                Request request = requestQueue.take();
-                dispatcher.dealTask(request);
+                if (requestQueue.size() > 0) {
+                    Request request = requestQueue.take();
+                    Log.e(TAG, "取出任务: "+request.url );
+                    dispatcher.dealTask(request);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

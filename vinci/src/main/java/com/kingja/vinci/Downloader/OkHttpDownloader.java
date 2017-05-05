@@ -1,6 +1,7 @@
 package com.kingja.vinci.Downloader;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -17,7 +18,10 @@ public class OkHttpDownloader implements Downloader {
     private final OkHttpClient okHttpClient;
 
     public OkHttpDownloader() {
-        okHttpClient = new OkHttpClient();
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        okHttpClient = builder.readTimeout(60000, TimeUnit.MILLISECONDS).connectTimeout(60000, TimeUnit.MILLISECONDS)
+                .build();
+
     }
 
     @Override

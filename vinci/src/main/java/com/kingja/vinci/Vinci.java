@@ -47,7 +47,7 @@ public class Vinci {
         this.mainHandler = mainHandler;
         this.cache = cache;
         this.dispatcher = dispatcher;
-        workThreadManager = new WorkThreadManager(3, dispatcher);
+        workThreadManager = new WorkThreadManager(1, dispatcher);
         workThreadManager.start();
     }
 
@@ -98,7 +98,7 @@ public class Vinci {
 
         public Vinci build() {
             if (threadPool == null) {
-                threadPool = Executors.newFixedThreadPool(5);
+                threadPool = Executors.newCachedThreadPool();
             }
             if (cache == null) {
                 cache = new LruCache(context);
