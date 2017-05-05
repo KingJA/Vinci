@@ -26,24 +26,24 @@ import static android.content.ContentValues.TAG;
 public class DownloadTask implements Runnable {
     private Handler handler;
     private Request request;
+    private Downloader downloader;
     private LruCache cache;
 
-    public DownloadTask(Handler handler, Request request, Downloader downloader, LruCache cache) {
-        this.handler = handler;
+    public DownloadTask( Request request,LruCache cache, Downloader downloader ) {
         this.request = request;
+        this.downloader = downloader;
         this.cache = cache;
     }
 
     @Override
     public void run() {
-        OkHttpDownloader okHttpDownloader = new OkHttpDownloader();
-        Bitmap bitmap=null;
+        Bitmap bitmap;
         try {
-            Response response = okHttpDownloader.load(request.url);
+            Response response = downloader.load(request.url);
             InputStream in = response.body().byteStream();
-             bitmap = BitmapFactory.decodeStream(in);
+            bitmap = BitmapFactory.decodeStream(in);
         } catch (IOException e) {
-            Log.e(TAG, "任务出错: "+e.getMessage());
+            Log.e(TAG, "任务出错: " + e.getMessage());
             e.printStackTrace();
             return;
         }

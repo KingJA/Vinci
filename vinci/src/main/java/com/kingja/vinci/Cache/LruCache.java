@@ -75,10 +75,11 @@ public class LruCache implements Cache {
         }
 
         synchronized (this) {
-            Log.e(TAG, "maxSize: " + maxSize+" addedSize: " + addedSize);
+
             Log.e(TAG, "存入缓存: " + key);
             putCount++;
             size += addedSize;
+            Log.e(TAG, "maxSize: " + maxSize+" size: " + size);
             Bitmap previous = map.put(key, bitmap);
             if (previous != null) {
                 size -= Utils.getBitmapBytes(previous);

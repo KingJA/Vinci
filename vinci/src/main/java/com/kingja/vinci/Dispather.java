@@ -1,8 +1,10 @@
 package com.kingja.vinci;
 
 
-import android.support.annotation.WorkerThread;
 import android.util.Log;
+
+import com.kingja.vinci.Cache.LruCache;
+import com.kingja.vinci.Downloader.Downloader;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -16,22 +18,26 @@ import static android.content.ContentValues.TAG;
  * Author:KingJA
  * Email:kingjavip@gmail.com
  */
-public class WorkThreadManager {
+public class Dispather {
     private int workThreadCount;
     private BlockingQueue<Request> mRequestQueue = new PriorityBlockingQueue<>();
     private WorkThread[] workThreads = null;
-    private  Dispatcher dispatcher;
+    private  ExecutorService threadPool;
+    private LruCache cache;
+    private Downloader downloader;
 
-    public WorkThreadManager(int workThreadCount, Dispatcher dispatcher) {
+    public Dispather(int workThreadCount, ExecutorService threadPool, LruCache cache, Downloader downloader) {
         this.workThreadCount = workThreadCount;
-        this.dispatcher = dispatcher;
+        this.threadPool = threadPool;
+        this.cache = cache;
+        this.downloader = downloader;
     }
 
 
     public void start() {
         workThreads = new WorkThread[workThreadCount];
         for (int i = 0; i < workThreadCount; i++) {
-            workThreads[i] = new WorkThread(mRequestQueue,dispatcher);
+            workThreads[i] = new WorkThread(mRequestQueue,threadPool,cache,downloader);
             workThreads[i].start();
         }
     }

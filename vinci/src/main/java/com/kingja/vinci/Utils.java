@@ -22,7 +22,7 @@ public class Utils {
         boolean largeHeap = (context.getApplicationInfo().flags & FLAG_LARGE_HEAP) != 0;
         int memoryClass = largeHeap ? am.getLargeMemoryClass() : am.getMemoryClass();
         // Target ~15% of the available heap.
-        return (int) (1024L * 1024L * memoryClass / 7);
+        return (int) (1024L * 1024L * memoryClass / 6);
     }
 
     public static <T> T getService(Context context, String service) {

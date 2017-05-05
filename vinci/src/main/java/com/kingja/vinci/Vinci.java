@@ -2,9 +2,6 @@ package com.kingja.vinci;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 
 import com.kingja.vinci.Cache.LruCache;
 import com.kingja.vinci.Downloader.Downloader;
@@ -13,7 +10,6 @@ import com.kingja.vinci.Downloader.OkHttpDownloader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.kingja.vinci.Dispatcher.COMPLETE_DOWNLOAD;
 
 /**
  * Description:TODO
@@ -23,36 +19,25 @@ import static com.kingja.vinci.Dispatcher.COMPLETE_DOWNLOAD;
  */
 public class Vinci {
     static Vinci singleton;
-    private Context context;
+     Context context;
     Downloader downloader;
     private LruCache cache;
     private ExecutorService threadPool;
-    Dispatcher dispatcher;
 
-    static Handler mainHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case COMPLETE_DOWNLOAD:
-                    break;
-            }
-        }
-    };
-    private final WorkThreadManager workThreadManager;
+    private final Dispather dispather;
 
 
-    public Vinci(Context context, Handler mainHandler, LruCache cache, Dispatcher dispatcher) {
+    public Vinci(Context context, LruCache cache, ExecutorService threadPool, Downloader downloader) {
         this.context = context;
-        this.mainHandler = mainHandler;
         this.cache = cache;
-        this.dispatcher = dispatcher;
-        workThreadManager = new WorkThreadManager(1, dispatcher);
-        workThreadManager.start();
+        this.downloader = downloader;
+        this.threadPool = threadPool;
+        dispather = new Dispather(1, threadPool, cache, downloader);
+        dispather.start();
     }
 
     public void addRequest(Request request) {
-        workThreadManager.addRequest(request);
+        dispather.addRequest(request);
     }
 
     public static Vinci with(Context context) {
@@ -71,14 +56,6 @@ public class Vinci {
 
     public Bitmap getCache(Request request) {
         return cache.get(request.url);
-    }
-
-    public void setCache(Request key, Bitmap bitmap) {
-        cache.set(key.url, bitmap);
-    }
-
-    public void loadImage(Request request) {
-        dispatcher.dealTask(request);
     }
 
 
@@ -106,8 +83,7 @@ public class Vinci {
             if (downloader == null) {
                 downloader = new OkHttpDownloader();
             }
-            Dispatcher dispatcher = new Dispatcher(context, mainHandler, threadPool, cache, downloader);
-            return new Vinci(context, mainHandler, cache, dispatcher);
+            return new Vinci(context, cache, threadPool, downloader);
         }
     }
 }

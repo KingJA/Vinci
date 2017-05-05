@@ -1,6 +1,7 @@
 package com.kingja.vinci;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.DrawableRes;
@@ -38,7 +39,7 @@ public class RequestCreator {
         Utils.checkMain();
         //有占位图则先展示占位图
         if (request.placeholderResId != 0) {
-            imageView.setBackgroundResource(request.placeholderResId);
+            imageView.setImageDrawable(vinci.context.getResources().getDrawable(request.placeholderResId));
         }
         //如果有缓存则从缓存中获取Bitmap
         final Bitmap cacheBitmap = vinci.getCache(request);
@@ -54,4 +55,6 @@ public class RequestCreator {
         //没有则利用下载器获取
         vinci.addRequest(request);
     }
+
+
 }
