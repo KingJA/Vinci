@@ -24,9 +24,7 @@ public class HttpConnDownloader implements Downloader {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(20000);
             conn.setRequestMethod("GET");
-            InputStream in = conn.getInputStream();
-            bitmap = BitmapFactory.decodeStream(in);
-            in.reset();
+            bitmap = BitmapFactory.decodeStream(conn.getInputStream());
             conn.disconnect();
         } catch (Exception e) {
             e.printStackTrace();

@@ -30,23 +30,15 @@ public class OkHttpDownloader implements Downloader {
         okHttpClient = builder
                 .connectTimeout(20000, TimeUnit.MILLISECONDS)
                 .readTimeout(20000, TimeUnit.MILLISECONDS)
-                .hostnameVerifier(new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String hostname, SSLSession session) {
-                        return true;
-                    }
-                })
                 .build();
-
     }
 
     @Override
     public Bitmap load(String url) {
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Origin", "http://stackexchange.com")
                 .build();
-        Response response = null;
+        Response response;
         try {
             response = okHttpClient.newCall(request).execute();
         } catch (IOException e) {
@@ -55,7 +47,6 @@ public class OkHttpDownloader implements Downloader {
             return null;
         }
         InputStream in = response.body().byteStream();
-        Log.e("OkHttpDownloader", "InputStream: " + (in == null));
         Bitmap bitmap = BitmapFactory.decodeStream(in);
         return bitmap;
     }

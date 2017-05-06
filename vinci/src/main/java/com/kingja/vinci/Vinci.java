@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  */
 public class Vinci {
     static Vinci singleton;
-     Context context;
+    Context context;
     Downloader downloader;
     private LruCache cache;
     private ExecutorService threadPool;
@@ -33,12 +33,15 @@ public class Vinci {
         this.cache = cache;
         this.downloader = downloader;
         this.threadPool = threadPool;
-        dispather = new Dispather(1, threadPool, cache, downloader);
-        dispather.start();
+        dispather = new Dispather(threadPool, cache, downloader);
     }
 
     public void addRequest(Request request) {
         dispather.addRequest(request);
+    }
+
+    public boolean isRunning(Request request) {
+        return dispather.isRunning(request);
     }
 
     public static Vinci with(Context context) {

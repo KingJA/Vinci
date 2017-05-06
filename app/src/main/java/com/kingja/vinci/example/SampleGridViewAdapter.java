@@ -1,9 +1,11 @@
 package com.kingja.vinci.example;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
 import com.kingja.vinci.Vinci;
 
@@ -19,35 +21,30 @@ final class SampleGridViewAdapter extends BaseAdapter {
 
     public SampleGridViewAdapter(Context context) {
         this.context = context;
-
-        // Ensure we get a different ordering of images on each run.
         Collections.addAll(urls, Data.URLS);
-//        Collections.shuffle(urls);
-
-        // Triple up the list.
-//        ArrayList<String> copy = new ArrayList<>(urls);
-//        urls.addAll(copy);
-//        urls.addAll(copy);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        SquaredImageView view = (SquaredImageView) convertView;
-        if (view == null) {
-            view = new SquaredImageView(context);
-            view.setScaleType(CENTER_CROP);
-        }
-
-        // Get the image URL for the current position.
         String url = getItem(position);
 
         // Trigger the download of the URL asynchronously into the image view.
+
+        ViewHolder viewHolder ;
+        if (convertView == null) {
+            viewHolder=new ViewHolder();
+            convertView = View.inflate(context, R.layout.item_iv, null);
+            viewHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
         Vinci.with(context)
                 .load(url)
                 .placeholderRes(R.drawable.placeholder)
                 .errorRes(R.drawable.error)
-                .into(view);
-        return view;
+                .into(viewHolder.iv);
+        return convertView;
     }
 
     @Override
@@ -63,5 +60,10 @@ final class SampleGridViewAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    static class ViewHolder {
+        private ImageView iv;
+
     }
 }

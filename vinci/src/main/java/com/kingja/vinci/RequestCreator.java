@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.DrawableRes;
+import android.util.Log;
 import android.widget.ImageView;
 
 /**
@@ -33,8 +34,18 @@ public class RequestCreator {
     }
 
     public void into(final ImageView imageView) {
+
         //合成请求Request
         Request request = configBuilder.setTarget(imageView).build();
+
+        if (vinci.isRunning(request)) {
+            Log.e("RequestCreator", "正在加载中...: ");
+            return;
+        }
+
+        //设置TAG，防止图片错位
+        imageView.setTag(request.url);
+
         //判断是否在主线程
         Utils.checkMain();
         //有占位图则先展示占位图
