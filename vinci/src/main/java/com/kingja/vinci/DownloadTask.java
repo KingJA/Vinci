@@ -1,19 +1,10 @@
 package com.kingja.vinci;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
 import android.util.Log;
 
 import com.kingja.vinci.Cache.LruCache;
 import com.kingja.vinci.Downloader.Downloader;
-import com.kingja.vinci.Downloader.OkHttpDownloader;
-import com.kingja.vinci.Request;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import okhttp3.Response;
 
 import static android.content.ContentValues.TAG;
 
@@ -24,29 +15,37 @@ import static android.content.ContentValues.TAG;
  * Email:kingjavip@gmail.com
  */
 public class DownloadTask implements Runnable {
-    private Handler handler;
     private Request request;
     private Downloader downloader;
     private LruCache cache;
+    private Dispather dispather;
 
-    public DownloadTask( Request request,LruCache cache, Downloader downloader ) {
+    public DownloadTask(Request request, LruCache cache, Downloader downloader, Dispather dispather) {
         this.request = request;
         this.downloader = downloader;
         this.cache = cache;
+        this.dispather = dispather;
     }
 
     @Override
     public void run() {
         Bitmap bitmap;
-        try {
-            Response response = downloader.load(request.url);
-            InputStream in = response.body().byteStream();
-            bitmap = BitmapFactory.decodeStream(in);
-        } catch (IOException e) {
-            Log.e(TAG, "任务出错: " + e.getMessage());
-            e.printStackTrace();
+        Log.e(TAG, "网络请求数据: " + Thread.currentThread().getName());
+        bitmap = downloader.load(request.url);
+        if (bitmap == null) {
+            request.imageView.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (request.errorRes != 0) {
+                        request.imageView.setImageDrawable(request.context.getResources().getDrawable(request.errorRes));
+                    }
+                }
+            });
             return;
         }
+        dispather.finishRequest(request);
+        dispather.exeueteReadyRequest();
+
         final Bitmap finalBitmap = bitmap;
         request.imageView.post(new Runnable() {
             @Override

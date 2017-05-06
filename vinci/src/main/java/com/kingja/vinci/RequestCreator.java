@@ -1,7 +1,6 @@
 package com.kingja.vinci;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.DrawableRes;
@@ -20,6 +19,7 @@ public class RequestCreator {
     public RequestCreator(Vinci vinci, String url) {
         this.vinci = vinci;
         configBuilder = new Request.Builder(url);
+        configBuilder.setContext(vinci.context);
     }
 
     public RequestCreator placeholderRes(@DrawableRes int placeholderResId) {
@@ -38,8 +38,8 @@ public class RequestCreator {
         //判断是否在主线程
         Utils.checkMain();
         //有占位图则先展示占位图
-        if (request.placeholderResId != 0) {
-            imageView.setImageDrawable(vinci.context.getResources().getDrawable(request.placeholderResId));
+        if (request.placeholderRes != 0) {
+            imageView.setImageDrawable(vinci.context.getResources().getDrawable(request.placeholderRes));
         }
         //如果有缓存则从缓存中获取Bitmap
         final Bitmap cacheBitmap = vinci.getCache(request);

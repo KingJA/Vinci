@@ -42,10 +42,11 @@ final class SampleGridViewAdapter extends BaseAdapter {
         String url = getItem(position);
 
         // Trigger the download of the URL asynchronously into the image view.
-            Vinci.with(context)
-                    .load(url)
-                    .placeholderRes(R.drawable.placeholder)
-                    .into(view);
+        Vinci.with(context)
+                .load(url)
+                .placeholderRes(R.drawable.placeholder)
+                .errorRes(R.drawable.error)
+                .into(view);
         return view;
     }
 

@@ -1,5 +1,6 @@
 package com.kingja.vinci;
 
+import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
@@ -12,16 +13,18 @@ import android.widget.ImageView;
  */
 public class Request implements Comparable<Request> {
     public String url;
-    public int placeholderResId;
+    public int placeholderRes;
     public int errorRes;
     public ImageView imageView;
+    public Context context;
 
 
     public Request(Builder builder) {
         this.url = builder.url;
-        this.placeholderResId = builder.placeholderResId;
+        this.placeholderRes = builder.placeholderResId;
         this.errorRes = builder.errorRes;
         this.imageView = builder.imageView;
+        this.context = builder.context;
     }
 
     @Override
@@ -33,6 +36,7 @@ public class Request implements Comparable<Request> {
         private String url;
         private int placeholderResId;
         private int errorRes;
+        private Context context;
         public ImageView imageView;
 
         public Builder(String url) {
@@ -51,6 +55,11 @@ public class Request implements Comparable<Request> {
 
         public Builder setTarget(ImageView imageView) {
             this.imageView = imageView;
+            return this;
+        }
+
+        public Builder setContext(Context context) {
+            this.context = context;
             return this;
         }
 

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Looper;
 
+import java.io.File;
+
 import static android.content.Context.ACTIVITY_SERVICE;
 import static android.content.pm.ApplicationInfo.FLAG_LARGE_HEAP;
 import static android.os.Build.VERSION.SDK_INT;
@@ -45,5 +47,14 @@ public class Utils {
 
     public static boolean isMain() {
         return Looper.getMainLooper().getThread() == Thread.currentThread();
+    }
+
+    static File createDefaultCacheDir(Context context) {
+        File cache = new File(context.getApplicationContext().getCacheDir(), "vinci-cache");
+        if (!cache.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            cache.mkdirs();
+        }
+        return cache;
     }
 }

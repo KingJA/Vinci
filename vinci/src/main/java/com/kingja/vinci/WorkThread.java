@@ -43,7 +43,7 @@ public class WorkThread extends Thread {
                 if (requestQueue.size() > 0) {
                     Request request = requestQueue.take();
                     Log.e(TAG, "取出任务: "+request.url );
-                    threadPool.execute(new DownloadTask(request,cache,downloader));
+//                    threadPool.execute(new DownloadTask(request,cache,downloader));
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

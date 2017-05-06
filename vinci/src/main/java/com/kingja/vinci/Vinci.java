@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 
 import com.kingja.vinci.Cache.LruCache;
 import com.kingja.vinci.Downloader.Downloader;
+import com.kingja.vinci.Downloader.HttpConnDownloader;
 import com.kingja.vinci.Downloader.OkHttpDownloader;
 
 import java.util.concurrent.ExecutorService;
@@ -81,7 +82,7 @@ public class Vinci {
                 cache = new LruCache(context);
             }
             if (downloader == null) {
-                downloader = new OkHttpDownloader();
+                downloader = new HttpConnDownloader();
             }
             return new Vinci(context, cache, threadPool, downloader);
         }

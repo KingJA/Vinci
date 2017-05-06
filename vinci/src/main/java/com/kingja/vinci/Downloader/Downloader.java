@@ -1,5 +1,7 @@
 package com.kingja.vinci.Downloader;
 
+import android.graphics.Bitmap;
+
 import java.io.IOException;
 
 import okhttp3.Response;
@@ -11,5 +13,5 @@ import okhttp3.Response;
  * Email:kingjavip@gmail.com
  */
 public interface Downloader {
-     Response load(String url) throws IOException;
+     Bitmap load(String url);
 }
